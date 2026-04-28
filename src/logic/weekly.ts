@@ -43,7 +43,7 @@ export function getWeekFitnessCompletions(
   for (const d of weekDays) {
     const rec = days[d];
     if (!rec) continue;
-    const fitnessIds: HabitId[] = ["run-bike", "climbing", "gym", "travel-workout"];
+    const fitnessIds: HabitId[] = ["run-bike", "climbing", "gym", "travel-workout", "misc-workout"];
     for (const id of fitnessIds) {
       if (rec.completions[id]) completed.add(id);
     }
