@@ -42,8 +42,8 @@ export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props)
   const illnessWaivers = summary.fitnessWaiversFromIllness;
   let waiversLeft = illnessWaivers;
 
-  function renderItem(item: FitnessItem, waived = false) {
-    const done = completed.has(item.id);
+  function renderItem(item: FitnessItem, waived = false, doneOverride?: boolean) {
+    const done = doneOverride ?? completed.has(item.id);
     return (
       <button
         key={item.id}
@@ -103,7 +103,7 @@ export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props)
           return renderItem(item, isWaived);
         })}
 
-        {renderItem(MISC_WORKOUT)}
+        {renderItem(MISC_WORKOUT, false, days[selectedDate]?.completions["misc-workout"] ?? false)}
       </div>
     </div>
   );
