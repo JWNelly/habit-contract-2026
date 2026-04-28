@@ -1,5 +1,4 @@
 import type { DayModifier } from "../types";
-import { MODIFIER_LABELS } from "../constants/habits";
 
 interface Option {
   value: DayModifier;

@@ -4,7 +4,6 @@ import {
   getISOWeek,
   getISOWeekYear,
   startOfISOWeek,
-  endOfISOWeek,
   addDays,
   isWeekend,
   isWithinInterval,
