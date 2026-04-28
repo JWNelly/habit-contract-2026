@@ -1,5 +1,6 @@
 import type { DayRecord, HabitId } from "../types";
 import { getWeekFitnessCompletions, deriveWeekSummary } from "../logic/weekly";
+import { getDaysInWeek } from "../logic/dates";
 
 interface Props {
   weekKey: string;
@@ -42,12 +43,23 @@ export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props)
   const illnessWaivers = summary.fitnessWaiversFromIllness;
   let waiversLeft = illnessWaivers;
 
-  function renderItem(item: FitnessItem, waived = false, doneOverride?: boolean) {
-    const done = doneOverride ?? completed.has(item.id);
+  function toggleItem(habitId: HabitId, done: boolean) {
+    if (done) {
+      // Find the day in the week that has this stored and clear it
+      const weekDays = getDaysInWeek(weekKey);
+      const storedDay = weekDays.find((d) => days[d]?.completions[habitId]);
+      onToggle(storedDay ?? selectedDate, habitId);
+    } else {
+      onToggle(selectedDate, habitId);
+    }
+  }
+
+  function renderItem(item: FitnessItem, waived = false) {
+    const done = completed.has(item.id);
     return (
       <button
         key={item.id}
-        onClick={() => !waived && onToggle(selectedDate, item.id)}
+        onClick={() => !waived && toggleItem(item.id, done)}
         disabled={waived}
         className={`w-full flex items-center gap-3 py-3 px-4 text-left transition-colors ${
           waived ? "opacity-50" : "active:bg-gray-50"
@@ -103,7 +115,7 @@ export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props)
           return renderItem(item, isWaived);
         })}
 
-        {renderItem(MISC_WORKOUT, false, days[selectedDate]?.completions["misc-workout"] ?? false)}
+        {renderItem(MISC_WORKOUT)}
       </div>
     </div>
   );
