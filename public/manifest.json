@@ -1,0 +1,21 @@
+{
+  "name": "Habit Contract",
+  "short_name": "Habits",
+  "description": "Track your daily and weekly habit contract",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f7f5",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
