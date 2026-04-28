@@ -8,7 +8,10 @@ export type HabitId =
   | "travel-workout"
   | "guitar-recording"
   | "cooking"
-  | "physics-study";
+  | "physics-study"
+  | "physics-textbook"
+  | "physics-research"
+  | "misc-workout";
 
 export type HabitFrequency = "daily" | "weekly" | "weekday";
 
@@ -20,6 +23,7 @@ export interface HabitDefinition {
   isAsterisk: boolean;
   description: string;
   isFitnessComponent?: boolean;
+  noFine?: boolean;
 }
 
 export type DayModifier =

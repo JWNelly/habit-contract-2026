@@ -90,6 +90,32 @@ export const HABITS: HabitDefinition[] = [
     isAsterisk: true,
     description: "Cook a meal you haven't cooked before, or cook for at least 2 people",
   },
+  {
+    id: "physics-textbook",
+    label: "Textbooks / Lecture Notes",
+    shortLabel: "Textbook",
+    frequency: "weekday",
+    isAsterisk: false,
+    description: "1 hr of textbook reading or lecture notes",
+  },
+  {
+    id: "physics-research",
+    label: "Research / Papers / Qiskit",
+    shortLabel: "Research",
+    frequency: "weekday",
+    isAsterisk: false,
+    description: "1 hr of research papers or Qiskit work",
+  },
+  {
+    id: "misc-workout",
+    label: "Misc Workout",
+    shortLabel: "Misc WO",
+    frequency: "weekly",
+    isAsterisk: false,
+    isFitnessComponent: true,
+    noFine: true,
+    description: "Any additional workout session",
+  },
 ];
 
 export const HABIT_MAP: Record<string, HabitDefinition> = Object.fromEntries(

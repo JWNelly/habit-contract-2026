@@ -1,8 +1,9 @@
 import type { DayRecord, DayModifier, HabitId } from "../types";
 import { DayModifierSelector } from "../components/DayModifierSelector";
 import { HabitCheckItem } from "../components/HabitCheckItem";
-import { getDailyApplicableHabits } from "../logic/applicability";
+import { getDailyApplicableHabits, isWaiverEligible } from "../logic/applicability";
 import { formatDisplayDate } from "../logic/dates";
+import { MODIFIER_LABELS } from "../constants/habits";
 
 interface Props {
   dateStr: string;
@@ -10,13 +11,14 @@ interface Props {
   isToday: boolean;
   onModifierChange: (modifier: DayModifier) => void;
   onToggle: (habitId: HabitId) => void;
+  onPhysicsSubToggle: (sub: "physics-textbook" | "physics-research", done: boolean) => void;
   onPrevDay?: () => void;
   onNextDay?: () => void;
   onGoToToday: () => void;
 }
 
 export function TodayView({
-  dateStr, record, isToday, onModifierChange, onToggle,
+  dateStr, record, isToday, onModifierChange, onToggle, onPhysicsSubToggle,
   onPrevDay, onNextDay, onGoToToday,
 }: Props) {
   const applicable = getDailyApplicableHabits(dateStr, record);
@@ -82,10 +84,10 @@ export function TodayView({
       )}
 
       {/* Waiver note */}
-      {["illness", "vacation", "holiday", "emergency"].includes(record.modifier) && (
+      {isWaiverEligible(record.modifier) && (
         <div className="mx-4 mb-3 px-3 py-2 bg-amber-50 rounded-lg border border-amber-100">
           <p className="text-xs text-amber-700">
-            <strong>{record.modifier === "illness" ? "Illness" : record.modifier === "vacation" ? "Vacation" : record.modifier === "holiday" ? "Holiday" : "Emergency"}:</strong>{" "}
+            <strong>{MODIFIER_LABELS[record.modifier] ?? record.modifier}:</strong>{" "}
             All daily habits waived today. 3+ waiver days this week will also waive guitar recording & cooking.
           </p>
         </div>
@@ -93,16 +95,57 @@ export function TodayView({
 
       {/* Habits list */}
       <div className="bg-white rounded-2xl mx-4 divide-y divide-gray-100 shadow-sm">
-        {applicable.map((h) => (
-          <HabitCheckItem
-            key={h.id}
-            habitId={h.id}
-            checked={record.completions[h.id] ?? false}
-            waived={h.waived}
-            note={h.note}
-            onToggle={() => !h.waived && onToggle(h.id)}
-          />
-        ))}
+        {applicable.map((h) => {
+          if (h.id === "physics-study" && !h.waived && !h.travelMode) {
+            const textbookDone = record.completions["physics-textbook"] ?? false;
+            const researchDone = record.completions["physics-research"] ?? false;
+            return (
+              <div key={h.id}>
+                <div className="px-4 py-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Physics Study</p>
+                    <p className="text-xs text-gray-500 mt-0.5">2 hrs — check off each block</p>
+                  </div>
+                  {textbookDone && researchDone && <span className="text-base">✅</span>}
+                </div>
+                <button
+                  onClick={() => onPhysicsSubToggle("physics-textbook", !textbookDone)}
+                  className="w-full flex items-center gap-3 py-2.5 pl-8 pr-4 text-left active:bg-gray-50 border-t border-gray-100"
+                >
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${textbookDone ? "bg-green-100 border-green-400" : "border-gray-300"}`}>
+                    {textbookDone && <span className="text-green-600 text-xs font-bold">✓</span>}
+                  </div>
+                  <div>
+                    <p className={`text-sm font-medium ${textbookDone ? "text-gray-400 line-through" : "text-gray-900"}`}>Textbooks / Lecture Notes</p>
+                    <p className="text-xs text-gray-500">1 hr</p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => onPhysicsSubToggle("physics-research", !researchDone)}
+                  className="w-full flex items-center gap-3 py-2.5 pl-8 pr-4 text-left active:bg-gray-50 border-t border-gray-100"
+                >
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${researchDone ? "bg-green-100 border-green-400" : "border-gray-300"}`}>
+                    {researchDone && <span className="text-green-600 text-xs font-bold">✓</span>}
+                  </div>
+                  <div>
+                    <p className={`text-sm font-medium ${researchDone ? "text-gray-400 line-through" : "text-gray-900"}`}>Research / Papers / Qiskit</p>
+                    <p className="text-xs text-gray-500">1 hr</p>
+                  </div>
+                </button>
+              </div>
+            );
+          }
+          return (
+            <HabitCheckItem
+              key={h.id}
+              habitId={h.id}
+              checked={record.completions[h.id] ?? false}
+              waived={h.waived}
+              note={h.note}
+              onToggle={() => !h.waived && onToggle(h.id)}
+            />
+          );
+        })}
         {applicable.length === 0 && (
           <div className="py-8 text-center text-gray-400 text-sm">
             No daily habits apply today.

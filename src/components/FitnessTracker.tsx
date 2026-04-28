@@ -28,6 +28,13 @@ const TRAVEL_WORKOUT: FitnessItem = {
   description: "100 pushups • 100 squats • Climber Core • 20 pullups (if available)",
 };
 
+const MISC_WORKOUT: FitnessItem = {
+  id: "misc-workout",
+  label: "Misc Workout",
+  icon: "🏋️",
+  description: "Any additional workout — no fine, just for tracking",
+};
+
 export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props) {
   const summary = deriveWeekSummary(weekKey, days);
   const completed = getWeekFitnessCompletions(weekKey, days);
@@ -95,6 +102,8 @@ export function FitnessTracker({ weekKey, days, onToggle, selectedDate }: Props)
           }
           return renderItem(item, isWaived);
         })}
+
+        {renderItem(MISC_WORKOUT)}
       </div>
     </div>
   );

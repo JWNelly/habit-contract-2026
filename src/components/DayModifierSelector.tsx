@@ -10,8 +10,7 @@ const OPTIONS: Option[] = [
   { value: "normal", label: "Normal", color: "bg-gray-100 text-gray-700 border-gray-200" },
   { value: "travel", label: "✈️ Travel", color: "bg-blue-50 text-blue-700 border-blue-200" },
   { value: "illness", label: "🤒 Illness", color: "bg-yellow-50 text-yellow-700 border-yellow-200" },
-  { value: "vacation", label: "🏖️ Vacation", color: "bg-green-50 text-green-700 border-green-200" },
-  { value: "holiday", label: "🎉 Holiday", color: "bg-purple-50 text-purple-700 border-purple-200" },
+
   { value: "emergency", label: "🚨 Emergency", color: "bg-red-50 text-red-700 border-red-200" },
 ];
 

@@ -26,7 +26,7 @@ function App() {
   const { weekKey: currentWeekKey } = useWeek(todayStr);
   const [viewedWeekKey, setViewedWeekKey] = useState<string | null>(null);
   const [viewedDayStr, setViewedDayStr] = useState<string | null>(null);
-  const { days, synced, getDay, setModifier, toggleCompletion } = useHabitStore(userId);
+  const { days, synced, getDay, setModifier, toggleCompletion, setCompletion } = useHabitStore(userId);
   const [payments, setPayments] = useState<number>(() => {
     try { return Number(localStorage.getItem("habit-contract:paid") ?? "0"); } catch { return 0; }
   });
@@ -57,6 +57,18 @@ function App() {
   function handleWeekOffset(delta: number) {
     const newStart = addDays(fromDateStr(weekStart), delta * 7);
     setViewedWeekKey(getWeekKey(newStart));
+  }
+
+  function handlePhysicsSubToggle(
+    dateStr: string,
+    sub: "physics-textbook" | "physics-research",
+    done: boolean
+  ) {
+    const current = getDay(dateStr);
+    const textbookDone = sub === "physics-textbook" ? done : (current.completions["physics-textbook"] ?? false);
+    const researchDone = sub === "physics-research" ? done : (current.completions["physics-research"] ?? false);
+    setCompletion(dateStr, sub, done);
+    setCompletion(dateStr, "physics-study", textbookDone && researchDone);
   }
 
   function handlePayment(amount: number) {
@@ -103,6 +115,7 @@ function App() {
             isToday={isToday}
             onModifierChange={(mod) => setModifier(activeDayStr, mod)}
             onToggle={(habitId) => toggleCompletion(activeDayStr, habitId)}
+            onPhysicsSubToggle={(sub, done) => handlePhysicsSubToggle(activeDayStr, sub, done)}
             onPrevDay={canGoPrevDay ? () => handleDayOffset(-1) : undefined}
             onNextDay={canGoNextDay ? () => handleDayOffset(1) : undefined}
             onGoToToday={() => setViewedDayStr(null)}
